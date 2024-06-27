@@ -1,0 +1,76 @@
+# Import necessary libraries
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.preprocessing import StandardScaler
+
+# Load the dataset
+df = pd.read_csv('path_to_automobile_dataset.csv')
+
+# a. Identify the dimension, structure, and summary of the data set.
+print("Dimensions of the dataset:", df.shape)
+print("\nStructure of the dataset:\n", df.info())
+print("\nSummary of the dataset:\n", df.describe(include='all'))
+
+# b. Preprocess the dataset and treat them (like missing values, ‘na’, ?). Justify the treatment.
+# Replace '?' with NaN
+df.replace('?', np.nan, inplace=True)
+
+# Convert appropriate columns to numeric
+for col in ['normalized-losses', 'bore', 'stroke', 'horsepower', 'peak-rpm', 'price']:
+    df[col] = pd.to_numeric(df[col], errors='coerce')
+
+# Handling missing values
+df.fillna(df.median(numeric_only=True), inplace=True)
+df.fillna(df.mode().iloc[0], inplace=True)
+
+print("\nSummary of the dataset after treatment:\n", df.describe(include='all'))
+
+# c. Plot the histogram for continuous variables (at least two) to analyse the data.
+plt.figure(figsize=(12, 6))
+plt.subplot(1, 2, 1)
+df['horsepower'].hist(bins=30)
+plt.title('Histogram of Horsepower')
+
+plt.subplot(1, 2, 2)
+df['price'].hist(bins=30)
+plt.title('Histogram of Price')
+
+plt.show()
+
+# d. Draw a violin plot to describe the distribution of a numerical variable to analyse the data.
+plt.figure(figsize=(10, 6))
+sns.violinplot(x='body-style', y='price', data=df)
+plt.title('Violin plot of Price by Body Style')
+plt.show()
+
+# e. Recognize the outliers using box plot (Display the box plot before and after outlier treatment)
+plt.figure(figsize=(12, 6))
+plt.subplot(1, 2, 1)
+sns.boxplot(y=df['price'])
+plt.title('Box plot of Price before Outlier Treatment')
+
+# Removing outliers (considering values beyond 1.5*IQR as outliers)
+Q1 = df['price'].quantile(0.25)
+Q3 = df['price'].quantile(0.75)
+IQR = Q3 - Q1
+df = df[~((df['price'] < (Q1 - 1.5 * IQR)) | (df['price'] > (Q3 + 1.5 * IQR)))]
+
+plt.subplot(1, 2, 2)
+sns.boxplot(y=df['price'])
+plt.title('Box plot of Price after Outlier Treatment')
+plt.show()
+
+# f. Display a heat map to display the relationship among the attributes.
+plt.figure(figsize=(12, 8))
+sns.heatmap(df.corr(), annot=True, cmap='coolwarm')
+plt.title('Heat Map of Correlation between Attributes')
+plt.show()
+
+# g. Standardize the continuous variable (if any)
+scaler = StandardScaler()
+continuous_vars = ['normalized-losses', 'wheel-base', 'length', 'width', 'height', 'curb-weight', 'engine-size', 'bore', 'stroke', 'compression-ratio', 'horsepower', 'peak-rpm', 'city-mpg', 'highway-mpg', 'price']
+df[continuous_vars] = scaler.fit_transform(df[continuous_vars])
+
+print("\nSummary of the standardized dataset:\n", df.describe(include='all'))
