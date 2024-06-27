@@ -1,0 +1,45 @@
+# Import necessary libraries
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Load the dataset
+df = pd.read_csv('data.csv')
+
+# 1a. Show the distribution of continuous variables using histogram
+continuous_vars = ['age', 'income']
+
+for var in continuous_vars:
+    plt.figure()
+    sns.histplot(df[var], kde=True)
+    plt.title(f'Distribution of {var}')
+    plt.xlabel(var)
+    plt.ylabel('Frequency')
+    plt.show()
+
+# 1b. Identify the relationship between two continuous variables using scatter plot
+plt.figure()
+sns.scatterplot(x=df['age'], y=df['income'])
+plt.title('Relationship between Age and Income')
+plt.xlabel('Age')
+plt.ylabel('Income')
+plt.show()
+
+# 1c. Find and display the frequency of the categorical values using count plot
+categorical_vars = ['gender', 'education']
+
+for var in categorical_vars:
+    plt.figure()
+    sns.countplot(x=df[var])
+    plt.title(f'Frequency of {var}')
+    plt.xlabel(var)
+    plt.ylabel('Count')
+    plt.show()
+
+# 1d. Apply point plots to display one continuous and one categorical variable
+plt.figure()
+sns.pointplot(x='education', y='income', data=df)
+plt.title('Income by Education Level')
+plt.xlabel('Education Level')
+plt.ylabel('Income')
+plt.show()
