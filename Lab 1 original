@@ -1,0 +1,63 @@
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+
+data = pd.read_csv("autompg.csv")
+data
+
+# Dimention, Structure, Summary 
+print("Dimention:", data.shape)
+print("\nStructure:")
+print(data.info)
+print("\nSummary: ")
+data.describe()
+
+data.head()
+
+data.tail()
+
+data.isna().sum()
+data.corr()
+
+# Added duplicate and null values
+
+data_new = pd.read_csv("autompg_.csv")
+data_new.head()
+
+data_new.fillna(data_new.mean(numeric_only=True), inplace=True)
+
+data_new.dropna(axis=0)
+
+data_new.duplicated().sum()
+
+data_new.drop_duplicates(inplace=True)
+
+# Plotting
+sns.histplot(data_new["cylinders"], color="orange")
+plt.title("Histogram of Cylinders")
+plt.show()
+
+sns.histplot(data_new["displacement"], color="yellow")
+plt.title("Histogram of Displacement")
+plt.show()
+
+# Violin Plot
+sns.violinplot(x=data_new['displacement'], color='skyblue')
+
+# Heatmap
+sns.heatmap(data_new.corr(), cmap="coolwarm")
+
+#Box Plot
+sns.boxplot(x='displacement', data=data_new)
+
+#Standardization
+from sklearn.preprocessing import StandardScaler
+
+df = data_new
+weight = df[['weight']]
+scaler = StandardScaler()
+
+displacement_std = scaler.fit_transform(displacement)
+df['weight'] = weight
+print(df[['weight', 'weight']].head())
