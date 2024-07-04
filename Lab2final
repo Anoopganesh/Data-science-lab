@@ -1,0 +1,37 @@
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+import numpy as np
+
+df =pd.read_csv(“autompg_.csv”)
+sns.histplot(df['horsepower'], kde=True)
+plt.title('Distribution of Horsepower')
+plt.xlabel('Horsepower')
+plt.ylabel('Frequency')
+
+
+plt.subplot(1, 2, 2)
+sns.histplot(df['weight'], kde=True)
+plt.title('Distribution of Weight')
+plt.xlabel('Weight')
+plt.ylabel('Frequency')
+
+sns.scatterplot(x='horsepower', y='weight', data=df)
+plt.title('Scatter Plot of Horsepower vs. Weight')
+plt.xlabel('Horsepower')
+plt.ylabel('Weight')
+
+
+sns.countplot(x='cylinders', data=df)
+plt.title('Count Plot of Cylinders')
+plt.xlabel('Number of Cylinders')
+plt.ylabel('Frequency')
+plt.show()
+
+
+plt.figure(figsize=(10, 6))
+sns.pointplot(x='cylinders', y='mpg', data=df, capsize=0.2, palette='Set2')
+plt.title('Point Plot of MPG vs. Cylinders')
+plt.xlabel('Number of Cylinders')
+plt.ylabel('Miles per Gallon (MPG)')
+plt.show()
