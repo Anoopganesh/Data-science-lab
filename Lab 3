@@ -1,0 +1,35 @@
+import matplotlib.pyplot as plt
+import pandas as pd
+import seaborn as sns
+import numpy as np
+
+df = pd.read_csv("bcancer.csv")
+df
+
+df = df.drop(["Unnamed: 32"], axis=1)
+df.head()
+
+df.shape
+df.describe()
+df.duplicated().sum()
+df.info()
+
+sns.boxplot(data = df, x = "radius_mean")
+
+Q1 = df["perimeter_mean"].quantile(0.25)
+Q3 = df["perimeter_mean"].quantile(0.75)
+IQR = Q3 - Q1
+lower_bound = Q1 - 1.5 * IQR
+upper_bound = Q3 + 1.5 * IQR
+df['perimeter_mean'] = df['perimeter_mean'].apply(lambda x: x if (x >= lower_bound and x <= upper_bound) else np.nan)
+df.dropna(inplace=True)
+
+sns.histplot(x = "radius_mean", data = df, hue="diagnosis")
+
+sns.violinplot(x="compactness_mean", data = df, color="green")
+
+sns.catplot(x='diagnosis', y='area_mean', data=df)
+
+plt.figure(figsize=[30,30])
+sns.heatmap(df.iloc[:,1:].corr(), annot=True)
+plt.show()
